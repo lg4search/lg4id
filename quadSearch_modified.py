@@ -176,7 +176,7 @@ if __name__ == '__main__':
         for line in inp:
             f_name=line.strip()
             print(f_name)
-            with open(str(f_name.rsplit('.',1)[0])+'.txt','w') as op_file:
+            with open(str(f_name.rsplit('.',1)[0].rsplit('/',1)[-1])+'.txt','w') as op_file:
                 f_rdr=fasta_iter(f_name)
                 for ij in f_rdr:
                     hdr,seq=ij
