@@ -1,0 +1,2 @@
+Homo_sapiens.GRCh38.dna.chromosome.22.fa
+Homo_sapiens.GRCh38.dna.chromosome.21.fa
