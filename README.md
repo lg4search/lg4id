@@ -42,13 +42,13 @@ With pip, python installed correctly, no errors should be encountered.
 
 File name examples (What can be entered into input_filenames.txt).
 
-path/to/Homo_sapiens.GRCh38.dna.chromosome.22.fa
-path/to/Homo_sapiens.GRCh38.dna.chromosome.21.fa
+ path/to/Homo_sapiens.GRCh38.dna.chromosome.22.fa
+ path/to/Homo_sapiens.GRCh38.dna.chromosome.21.fa
 
 If the input files are in the same folder as the python script, the path can be skipped as shown below. But each file MUST have an extension such as .fa or .txt or .fasta etc.
 
-Homo_sapiens.GRCh38.dna.chromosome.22.fa
-Homo_sapiens.GRCh38.dna.chromosome.21.fa
+ Homo_sapiens.GRCh38.dna.chromosome.22.fa
+ Homo_sapiens.GRCh38.dna.chromosome.21.fa
 
 5. Now since the input to the program is ready, Open a command prompt window and navigate to the folder with the python script in the command prompt. (Can be done using the command "cd path/to/folder").
 
