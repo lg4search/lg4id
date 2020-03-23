@@ -41,6 +41,7 @@ With pip, python installed correctly, no errors should be encountered.
 4. Open the input_filenames.txt and add the filenames to be analyzed one in each line along with the extension. All the files must be FASTA formatted i.e., each sequence in a file need to be preceded by a header starting with the symbol ">". Each file can have any number of Fasta formatted sequences and Any number of files can be inputted using the input_filenames.txt. We took care that your computer doesn't get out of memory even too many files are inputted (We only process one file and one seq at any moment). 
 
 File name examples (What can be entered into input_filenames.txt).
+
 path/to/Homo_sapiens.GRCh38.dna.chromosome.22.fa
 path/to/Homo_sapiens.GRCh38.dna.chromosome.21.fa
 
