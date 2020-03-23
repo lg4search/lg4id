@@ -1,4 +1,7 @@
 import re
+from bitarray import bitarray
+from itertools import groupby
+
 #import numpy as np
 
 def getTestString(filename):
@@ -10,19 +13,29 @@ def getTestString(filename):
     #re.sub(r"\r?\n", "", outString)
     return "".join(lineList)
 
+def fasta_iter(fasta_name):
+    fh = open(fasta_name)
+    faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
+    for header in faiter:
+        headerStr = header.__next__()[1:].strip()
+        seq = "".join(s.strip() for s in faiter.__next__())
+        yield headerStr,seq
+
 
 def getMatches(inString):
     #import numpy as np
-    #print('vachindi')
+    
     #print("getting matches")
     stringLength = len(inString)
     patternLength = 3
     correctedLength = stringLength - patternLength + 1
 
-    boolArray = [[0,0] for _ in range(correctedLength)]#np.zeros((correctedLength,2))
-    #balry={}
-    #balry['0']=cray
-    #balry['1']=gray
+    #boolArray = [[0,0] for _ in range(correctedLength)]#np.zeros((correctedLength,2))
+    balry={}
+    c_ray=correctedLength*bitarray('0')
+    g_ray=correctedLength*bitarray('0')
+    balry['0']=c_ray
+    balry['1']=g_ray
     stringIterator = iter(range(correctedLength))
     for i in stringIterator:
         #print("beginning of iteration: " + str(i))
@@ -30,7 +43,7 @@ def getMatches(inString):
         #    print( str(i // 1000000) + " Million")
         tempString = inString[i:i + patternLength]
         if (tempString.upper() == "CCC"):
-            boolArray[i][0] = 1
+            balry['0'][i] = 1
             #print("*********skipping*********")
             for _ in range(patternLength - 1):
                 try:
@@ -39,7 +52,7 @@ def getMatches(inString):
                 except StopIteration:
                     continue
         elif (tempString.upper() == "GGG"):
-            boolArray[i][1] = 1
+            balry['1'][i] = 1
             #print("*********skipping**********")
             for _ in range(patternLength - 1):
                 try:
@@ -49,7 +62,7 @@ def getMatches(inString):
                     continue
     #print(boolArray)
 
-    return boolArray
+    return balry
 
 #def getCounts(regexResults):
 #    count = 0
@@ -78,7 +91,7 @@ def processDictEntry(lG4List, currentStart, currentEnd, inString):
     lG4List.append(tempDict)
 
 def driver(inString, binSize=1500, minHits=120):
-    stringLength = len(inString)
+    #stringLength = len(inString)
 
     lG4List = []
     inLG4 = False
@@ -86,17 +99,20 @@ def driver(inString, binSize=1500, minHits=120):
     currentEnd = 0
     runningTotalGGG = 0
     runningTotalCCC = 0
+    tfray={}
+    tfray[True]=1
+    tfray[False]=0
 
     matchArray = getMatches(inString)
 
     #print("calculating totals")
     #calculatate sums for first bin to initialize
-    for i in range(binSize):
-        tempCCC = matchArray[i][0]
-        tempGGG = matchArray[i][1]
+    #for i in range(binSize):
+        #tempCCC = matchArray[i][0]
+        #tempGGG = matchArray[i][1]
 
-        runningTotalCCC += tempCCC
-        runningTotalGGG += tempGGG
+    runningTotalCCC =matchArray['0'][0:binSize].count()
+    runningTotalGGG =matchArray['1'][0:binSize].count()
 
     maxRunningTotal = max(runningTotalCCC, runningTotalGGG)
     if (maxRunningTotal > minHits):
@@ -107,16 +123,16 @@ def driver(inString, binSize=1500, minHits=120):
 
 
     #now go through next bin through end, adding next entry to running total and subtracting last entry of last bin to total
-    for i in range(binSize, len(matchArray)):
+    for i in range(binSize, matchArray['0'].length()):
         #if((i % 1000000) == 0):
         #    print( str(i // 1000000) + " Million")
         lastBinStart = i - binSize
 
-        tempCCC = matchArray[i][0]
-        tempGGG = matchArray[i][1]
+        tempCCC = tfray[matchArray['0'][i]]
+        tempGGG = tfray[matchArray['1'][i]]
 
-        tempCCClastBin = matchArray[lastBinStart][0]
-        tempGGGlastBin = matchArray[lastBinStart][1]
+        tempCCClastBin = tfray[matchArray['0'][lastBinStart]]
+        tempGGGlastBin = tfray[matchArray['1'][lastBinStart]]
 
         runningTotalCCC += tempCCC
         runningTotalGGG += tempGGG
@@ -156,11 +172,26 @@ def driver(inString, binSize=1500, minHits=120):
         processDictEntry(lG4List, currentStart, currentEnd, inString)
     return lG4List
 if __name__ == '__main__':
-    #testString = getTestString("C:/SALTS/lncrna/grant/Grant-file_upload/Grant-file_upload-new/testG4sequencesnew.txt")
-    #testString = getTestString()
-    #print("Got String")
-    #tempMatches = getMatches(testString)
-    #print(tempMatches)
-    #print(getCounts(tempMatches))
-    for i in driver(testString):
-        print(i)
+    with open('input_filenames.txt') as inp:
+        for line in inp:
+            f_name=line.strip()
+            print(f_name)
+            with open(str(f_name.rsplit('.',1)[0])+'.txt','w') as op_file:
+                f_rdr=fasta_iter(f_name)
+                for ij in f_rdr:
+                    hdr,seq=ij
+                    op_file.write(hdr+'\n')
+                    lg4=driver(seq)
+                    hits=0
+                    for k in lg4:
+                        hits+=1
+                        binStart = k['binStart']
+                        binEnd = k['binEnd']
+                        sequence=k['sequence']
+                        op_file.write('Hit::'+str(hits)+'\n')
+                        op_file.write('Start-End Positions:: '+str(binStart)+'\t'+str(binEnd)+'\n')
+                        op_file.write('Sequence:'+'\n')
+                        op_file.write(str(sequence)+'\n')
+
+
+
