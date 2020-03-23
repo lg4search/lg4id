@@ -40,15 +40,15 @@ With pip, python installed correctly, no errors should be encountered.
 
 4. Open the input_filenames.txt and add the filenames to be analyzed one in each line along with the extension. All the files must be FASTA formatted i.e., each sequence in a file need to be preceded by a header starting with the symbol ">". Each file can have any number of Fasta formatted sequences and Any number of files can be inputted using the input_filenames.txt. We took care that your computer doesn't get out of memory even too many files are inputted (We only process one file and one seq at any moment). 
 
-File name examples (What can be entered into input_filenames.txt).
+*File name examples (What can be entered into input_filenames.txt).
 
-Path/to/Homo_sapiens.GRCh38.dna.chromosome.22.fa \n
-Path/to/Homo_sapiens.GRCh38.dna.chromosome.21.fa
+>>Path/to/Homo_sapiens.GRCh38.dna.chromosome.22.fa
+>>Path/to/Homo_sapiens.GRCh38.dna.chromosome.21.fa
 
 If the input files are in the same folder as the python script, the path can be skipped as shown below. But each file MUST have an extension such as .fa or .txt or .fasta etc.
 
- Homo_sapiens.GRCh38.dna.chromosome.22.fa  \n
- Homo_sapiens.GRCh38.dna.chromosome.21.fa
+ >>Homo_sapiens.GRCh38.dna.chromosome.22.fa
+ >>Homo_sapiens.GRCh38.dna.chromosome.21.fa
 
 5. Now since the input to the program is ready, Open a command prompt window and navigate to the folder with the python script in the command prompt. (Can be done using the command "cd path/to/folder").
 
